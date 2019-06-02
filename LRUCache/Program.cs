@@ -87,13 +87,14 @@ public class LRUCache<TKey,TValue>
 
     public void Add(TKey key, TValue value)
     {
+        //Update value if key is present
         if (map.ContainsKey(key))
         {
             var node = map[key];
             node.Value = (key, value);
             refresh(node);
         }
-        else
+        else //Add the new (key,value) to the map and the end of list 
         {
             if (list.Count >= Capacity)
             {
@@ -107,6 +108,17 @@ public class LRUCache<TKey,TValue>
         }
     }
 
+    public TKey MostRecentVisitedKey()
+    {
+        return list.Last.Value.Item1;
+    }
+
+    public TValue MostRecentVisitedValue()
+    {
+        return list.Last.Value.Item2;
+    }
+
+    //extrat the node and put it to end of list 
     private void refresh(LinkedListNode<(TKey, TValue)> node)
     {
         if (list.Last == node) return;
