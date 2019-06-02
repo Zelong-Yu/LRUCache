@@ -15,9 +15,9 @@ class Program
         Console.WriteLine(   cache.Get(1)    );   // returns 1
         cache.Put(3, 3);    // evicts key 2
         Console.WriteLine(cache.TryGet(2, out int val));       // returns false (not found)
-        cache.Put(4, 4);    // evicts key 1
+        cache[4]= 4;    // evicts key 1
         Console.WriteLine(cache.TryGet(1, out  val));       // returns false (not found)
-        Console.WriteLine(cache.Get(3));       // returns 3
+        Console.WriteLine(cache[3]);       // returns 3
         Console.WriteLine(cache.Get(4));       // returns 4
         Console.WriteLine( $"Capacity is {cache.Capacity}" );
         cache.Capacity = 10;
@@ -50,6 +50,12 @@ public class LRUCache<TKey,TValue>
         map = new Dictionary<TKey, LinkedListNode<(TKey, TValue)>>();
         list = new LinkedList<(TKey, TValue)>();
         this.Capacity = capacity;
+    }
+
+    public TValue this[TKey index]
+    {
+        get { return Get(index); }
+        set { Put(index, value); }
     }
 
     public TValue Get(TKey key)
