@@ -123,7 +123,7 @@ public class LRUCache<TKey,TValue>
     //extrat the most recently visited node and put it to end of list 
     private void refresh(LinkedListNode<(TKey, TValue)> node)
     {
-        if (list.Last == node) return;
+        if (list.Last == node) return;//no need to update if the last node is already the most recently visited one
         list.Remove(node);
         list.AddLast(node);
     }
