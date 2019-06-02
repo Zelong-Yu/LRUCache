@@ -96,6 +96,7 @@ public class LRUCache<TKey,TValue>
         }
         else //Add the new (key,value) to the map and the end of list 
         {
+            //if capacity has been reached, delete the head of list, which is the least-recently-used element
             if (list.Count >= Capacity)
             {
                 var oldKey = list.First.Value.Item1;
@@ -118,7 +119,7 @@ public class LRUCache<TKey,TValue>
         return list.Last.Value.Item2;
     }
 
-    //extrat the node and put it to end of list 
+    //extrat the most recently visited node and put it to end of list 
     private void refresh(LinkedListNode<(TKey, TValue)> node)
     {
         if (list.Last == node) return;
