@@ -19,6 +19,9 @@ class Program
         Console.WriteLine(cache.TryGet(1, out  val));       // returns false (not found)
         Console.WriteLine(cache.Get(3));       // returns 3
         Console.WriteLine(cache.Get(4));       // returns 4
+        Console.WriteLine( $"Capacity is {cache.Capacity}" );
+        cache.Capacity = 10;
+        Console.WriteLine($"New Capacity is {cache.Capacity}");
     }
 }
 
@@ -27,11 +30,26 @@ public class LRUCache<TKey,TValue>
     private int capacity;
     private Dictionary<TKey, LinkedListNode<(TKey, TValue)>> map;
     private LinkedList<(TKey, TValue)> list;
+
+    public int Capacity { get => capacity;
+        set
+        {
+            if (value < 1) throw new ArgumentOutOfRangeException("Capacity","Capacity must be positive.");
+            capacity = value;
+            while (list.Count > Capacity)
+            {
+                var oldKey = list.First.Value.Item1;
+                map.Remove(oldKey);
+                list.RemoveFirst();
+            }
+        }
+    }
+
     public LRUCache(int capacity)
     {
-        this.capacity = capacity;
         map = new Dictionary<TKey, LinkedListNode<(TKey, TValue)>>();
         list = new LinkedList<(TKey, TValue)>();
+        this.Capacity = capacity;
     }
 
     public TValue Get(TKey key)
@@ -71,7 +89,7 @@ public class LRUCache<TKey,TValue>
         }
         else
         {
-            if (list.Count >= capacity)
+            if (list.Count >= Capacity)
             {
                 var oldKey = list.First.Value.Item1;
                 map.Remove(oldKey);
