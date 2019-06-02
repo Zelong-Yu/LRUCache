@@ -12,10 +12,10 @@ class Program
 
         cache.Add(1, 1);
         cache.Add(2, 2);
-        Console.WriteLine(   cache.Get(1)    );   // returns 1
-        cache.Add(3, 3);    // evicts key 2
+        Console.WriteLine(   cache.Get(1)    );   // returns 1 and update 1 to most recently visited at the back end
+        cache.Add(3, 3);    // adding 3 should evict key 2 since 2 is least recently visited
         Console.WriteLine(cache.TryGet(2, out int val));       // returns false (not found)
-        cache[4]= 4;    // evicts key 1
+        cache[4]= 4;    // this should  evicts key 1
         Console.WriteLine(cache.TryGet(1, out  val));       // returns false (not found)
         Console.WriteLine(cache[3]);       // returns 3
         Console.WriteLine(cache.Get(4));       // returns 4
