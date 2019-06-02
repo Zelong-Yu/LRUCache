@@ -8,7 +8,7 @@ class Program
 {
     static void Main(string[] args)
     {
-        LRUCache cache = new LRUCache(2 /* capacity */ );
+        LRUCache<int,int> cache = new LRUCache<int,int>(2 /* capacity */ );
 
         cache.Put(1, 1);
         cache.Put(2, 2);
@@ -22,19 +22,19 @@ class Program
     }
 }
 
-public class LRUCache
+public class LRUCache<TKey,TValue>
 {
     private int capacity;
-    private Dictionary<int, LinkedListNode<(int, int)>> map;
-    private LinkedList<(int, int)> list;
+    private Dictionary<TKey, LinkedListNode<(TKey, TValue)>> map;
+    private LinkedList<(TKey, TValue)> list;
     public LRUCache(int capacity)
     {
         this.capacity = capacity;
-        map = new Dictionary<int, LinkedListNode<(int, int)>>();
-        list = new LinkedList<(int, int)>();
+        map = new Dictionary<TKey, LinkedListNode<(TKey, TValue)>>();
+        list = new LinkedList<(TKey, TValue)>();
     }
 
-    public int Get(int key)
+    public TValue Get(TKey key)
     {
         if (map.ContainsKey(key))
         {
@@ -42,10 +42,10 @@ public class LRUCache
             refresh(node);
             return node.Value.Item2;
         }
-        else return -1;
+        else throw new KeyNotFoundException(); //not found
     }
 
-    public void Put(int key, int value)
+    public void Put(TKey key, TValue value)
     {
         if (map.ContainsKey(key))
         {
@@ -61,13 +61,13 @@ public class LRUCache
                 map.Remove(oldKey);
                 list.RemoveFirst();
             }
-            var node = new LinkedListNode<(int, int)>((key, value));
+            var node = new LinkedListNode<(TKey, TValue)>((key, value));
             list.AddLast(node);
             map[key] = node;
         }
     }
 
-    private void refresh(LinkedListNode<(int, int)> node)
+    private void refresh(LinkedListNode<(TKey, TValue)> node)
     {
         if (list.Last == node) return;
         list.Remove(node);
