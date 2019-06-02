@@ -28,14 +28,15 @@ class Program
 public class LRUCache<TKey,TValue>
 {
     private int capacity;
-    private Dictionary<TKey, LinkedListNode<(TKey, TValue)>> map;
-    private LinkedList<(TKey, TValue)> list;
+    private Dictionary<TKey, LinkedListNode<(TKey, TValue)>> map; //to ensure O(1) Get, we need a Dictionary
+    private LinkedList<(TKey, TValue)> list; //most recently visited element is always at the end of list
 
     public int Capacity { get => capacity;
         set
         {
             if (value < 1) throw new ArgumentOutOfRangeException("Capacity","Capacity must be positive.");
             capacity = value;
+            //while the list is over capacity, keep deleting least recently used elements
             while (list.Count > Capacity)
             {
                 var oldKey = list.First.Value.Item1;
@@ -63,7 +64,7 @@ public class LRUCache<TKey,TValue>
         if (map.ContainsKey(key))
         {
             var node = map[key];
-            refresh(node);
+            refresh(node);//put the most recently visited node to end of list
             return node.Value.Item2;
         }
         else throw new KeyNotFoundException(); //not found
@@ -74,7 +75,7 @@ public class LRUCache<TKey,TValue>
         if (map.ContainsKey(key))
         {
             var node = map[key];
-            refresh(node);
+            refresh(node);//put the most recently visited node to end of list
             value = node.Value.Item2;
             return true;
         }
@@ -104,7 +105,7 @@ public class LRUCache<TKey,TValue>
                 list.RemoveFirst();
             }
             var node = new LinkedListNode<(TKey, TValue)>((key, value));
-            list.AddLast(node);
+            list.AddLast(node);//add the new node to end of list
             map[key] = node;
         }
     }
