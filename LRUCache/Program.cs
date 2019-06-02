@@ -14,9 +14,9 @@ class Program
         cache.Put(2, 2);
         Console.WriteLine(   cache.Get(1)    );   // returns 1
         cache.Put(3, 3);    // evicts key 2
-        Console.WriteLine(cache.Get(2));       // returns -1 (not found)
+        Console.WriteLine(cache.TryGet(2, out int val));       // returns false (not found)
         cache.Put(4, 4);    // evicts key 1
-        Console.WriteLine(cache.Get(1));       // returns -1 (not found)
+        Console.WriteLine(cache.TryGet(1, out  val));       // returns false (not found)
         Console.WriteLine(cache.Get(3));       // returns 3
         Console.WriteLine(cache.Get(4));       // returns 4
     }
@@ -43,6 +43,22 @@ public class LRUCache<TKey,TValue>
             return node.Value.Item2;
         }
         else throw new KeyNotFoundException(); //not found
+    }
+
+    public bool TryGet(TKey key, out TValue value)
+    {
+        if (map.ContainsKey(key))
+        {
+            var node = map[key];
+            refresh(node);
+            value = node.Value.Item2;
+            return true;
+        }
+        else //key not found
+        {
+            value = default;
+            return false; 
+        }
     }
 
     public void Put(TKey key, TValue value)
